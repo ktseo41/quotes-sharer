@@ -38,6 +38,8 @@ const bindColors = (preset: Preset) => {
   textColor.value = preset.textColor;
 };
 
+const paragraphFontSize = ref(15);
+
 //
 const sharing = ref();
 const isLoadingImage = ref(false);
@@ -63,8 +65,8 @@ const downloadImage = function () {
   <section>
     <div class="wrapper">
       <article ref="sharing" :style="{ backgroundColor }">
-        <p :style="{ color: textColor }">
-          {{ content }}
+        <p :style="{ color: textColor, fontSize: `${paragraphFontSize}px` }">
+          &nbsp;{{ content }}
           <!-- “... 세네카가 말했어. 삶이 짧은 것이 아니라 우리가 시간을 낭비한다고."
         그런데 이 말을 꼭 속으로 뭔가를 억누르면서 한다. 이건 말뿐이고 현실
         세계의 나는 늘 삶을 낭비한다. 늘 쓸데없는 일에 힘을 빼앗긴다. 늘 하고
@@ -90,19 +92,33 @@ const downloadImage = function () {
         <input v-model="title" type="text" name="book" id="book" />
         <h3>저자</h3>
         <input v-model="author" type="text" name="author" id="author" />
+        <br />
+        <br />
         <h3>배경색</h3>
         <input
           v-model="backgroundColor"
+          type="color"
+          name="backgroundColorColor"
+          id="backgroundColorColor"
+        />
+        <input
+          v-model="backgroundColor"
           type="text"
-          name="backgroundColor"
-          id="backgroundColor"
+          name="backgroundColorText"
+          id="backgroundColorText"
         />
         <h3>글자색</h3>
         <input
           v-model="textColor"
+          type="color"
+          name="textColorColor"
+          id="textColorColor"
+        />
+        <input
+          v-model="textColor"
           type="text"
-          name="textColor"
-          id="textColor"
+          name="textColorText"
+          id="textColorText"
         />
         <h3>프리셋</h3>
         <ul>
@@ -118,6 +134,14 @@ const downloadImage = function () {
             </button>
           </li>
         </ul>
+        <br />
+        <h3>본문사이즈</h3>
+        <input
+          v-model="paragraphFontSize"
+          type="number"
+          name="pFontSize"
+          id="pFontSize"
+        />
       </div>
       <div id="features">
         <!-- 이미지 다운로드 -->
