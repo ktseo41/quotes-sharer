@@ -166,6 +166,12 @@ section {
   grid-template-columns: 50vw 50vw;
 }
 
+@media (max-width: 768px) {
+  section {
+    grid-template-columns: 100vw;
+  }
+}
+
 .wrapper {
   display: grid;
   place-items: center;
@@ -224,6 +230,12 @@ input#content {
     list-style: none;
     padding: 0;
     margin: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .config {
+    grid-template-columns: 1fr;
   }
 }
 </style>
