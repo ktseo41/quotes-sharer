@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TheWelcome from "@/components/TheWelcome.vue";
+import QuoteSharer from "@/components/QuoteSharer.vue";
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <QuoteSharer />
   </main>
 </template>

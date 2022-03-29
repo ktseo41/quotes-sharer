@@ -31,6 +31,10 @@ const presets = [
     backgroundColor: "#fff4ea",
     textColor: "#2c2c2c",
   },
+  {
+    backgroundColor: "#005f73",
+    textColor: "#fafafa",
+  },
 ];
 
 const bindColors = (preset: Preset) => {
