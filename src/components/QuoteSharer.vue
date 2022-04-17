@@ -44,7 +44,9 @@ const bindColors = (preset: Preset) => {
 
 const paragraphFontSize = ref(15);
 
-//
+const showConfig = ref(false);
+
+// 이미지 다운로드
 const sharing = ref();
 const isLoadingImage = ref(false);
 
@@ -67,8 +69,8 @@ const downloadImage = function () {
 </script>
 <template>
   <section>
-    <div class="wrapper">
-      <article ref="sharing" :style="{ backgroundColor }">
+    <div class="wrapper relative">
+      <article class="shadow-lg" ref="sharing" :style="{ backgroundColor }">
         <p :style="{ color: textColor, fontSize: `${paragraphFontSize}px` }">
           &nbsp;{{ content }}
           <!-- “... 세네카가 말했어. 삶이 짧은 것이 아니라 우리가 시간을 낭비한다고."
@@ -86,18 +88,54 @@ const downloadImage = function () {
         </div>
         <!--   <img height="350" width="350" src="http://image.kyobobook.co.kr/images/book/xlarge/933/x9788955824933.jpg" alt="a"> -->
       </article>
+      <div class="buttons flex justify-end mt-2">
+        <img
+          v-if="!isLoadingImage"
+          class="rounded-full p-2 hover:bg-gray-200 hover:cursor-pointer"
+          src="../assets/ic_fluent_arrow_downloaded_24_filled.svg"
+          alt="다운로드"
+          @click="downloadImage"
+        />
+        <LoadingIcon width="40" height="40" v-else />
+        <img
+          class="rounded-full p-2 hover:bg-gray-200 hover:cursor-pointer"
+          src="../assets/ic_fluent_settings_24_filled.svg"
+          alt="설정"
+        />
+      </div>
     </div>
-    <div class="config">
-      <div>
-        <h3>내용</h3>
-        <textarea v-model="content" name="content" cols="30" rows="12">
+    <div class="configs flex justify-center">
+      <div class="contents-inputs">
+        <h3 class="font-semibold mb-1">내용</h3>
+        <textarea
+          class="border rounded p-2"
+          v-model="content"
+          name="content"
+          cols="30"
+          rows="9"
+          placeholder="공유하고 싶은 내용을 입력하세요."
+        >
         </textarea>
-        <h3>책</h3>
-        <input v-model="title" type="text" name="book" id="book" />
-        <h3>저자</h3>
-        <input v-model="author" type="text" name="author" id="author" />
+        <h3 class="mb-1 mt-3 font-semibold">책</h3>
+        <input
+          class="border rounded px-2 py-1"
+          v-model="title"
+          type="text"
+          name="book"
+          id="book"
+        />
+        <h3 class="mb-1 mt-3 font-semibold">저자</h3>
+        <input
+          class="border rounded px-2 py-1"
+          v-model="author"
+          type="text"
+          name="author"
+          id="author"
+        />
         <br />
         <br />
+      </div>
+      <div v-if="showConfig" class="features p-6">
         <h3>배경색</h3>
         <input
           v-model="backgroundColor"
@@ -146,8 +184,6 @@ const downloadImage = function () {
           name="pFontSize"
           id="pFontSize"
         />
-      </div>
-      <div id="features">
         <!-- 이미지 다운로드 -->
         <input
           v-if="!isLoadingImage"
@@ -220,22 +256,11 @@ input#content {
   height: 200px;
 }
 
-.config {
-  display: grid;
-  place-items: center;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 20px;
+.buttons {
+  width: 350px;
 
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-}
-
-@media (max-width: 768px) {
-  .config {
-    grid-template-columns: 1fr;
+  *:not(:first-child) {
+    margin-left: 5px;
   }
 }
 </style>
