@@ -53,7 +53,10 @@ const isLoadingImage = ref(false);
 const downloadImage = function () {
   isLoadingImage.value = true;
 
-  toPng(sharing.value)
+  toPng(sharing.value, {
+    canvasWidth: 700,
+    canvasHeight: 700,
+  })
     .then(function (dataUrl) {
       const link = document.createElement("a");
       link.download = title.value;
@@ -101,6 +104,7 @@ const downloadImage = function () {
           class="rounded-full p-2 hover:bg-gray-200 hover:cursor-pointer"
           src="../assets/ic_fluent_settings_24_filled.svg"
           alt="설정"
+          @click="showConfig = !showConfig"
         />
       </div>
     </div>
@@ -184,14 +188,6 @@ const downloadImage = function () {
           name="pFontSize"
           id="pFontSize"
         />
-        <!-- 이미지 다운로드 -->
-        <input
-          v-if="!isLoadingImage"
-          type="button"
-          value="이미지 다운로드"
-          @click="downloadImage"
-        />
-        <LoadingIcon width="40px" height="40px" v-else alt="불러오는중 " />
       </div>
     </div>
   </section>
