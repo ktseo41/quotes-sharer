@@ -52,6 +52,10 @@ nav a:first-of-type {
     place-items: center;
   }
 
+  #app {
+    margin-top: -12vh;
+  }
+
   header {
     display: flex;
     place-items: center;
