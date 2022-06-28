@@ -313,11 +313,20 @@ input[type="number"] {
 @media (max-width: 768px) {
   section {
     grid-template-columns: 1fr;
-    padding: 30px 20px 0 20px;
+  }
+
+  .wrapper {
+    margin-top: 20px;
   }
 
   article {
+    width: 90vw;
+    height: 90vw;
     padding: 0;
+  }
+
+  .buttons {
+    width: 90vw;
   }
 
   .detail-configs {
@@ -325,8 +334,13 @@ input[type="number"] {
     top: auto;
     left: auto;
     right: auto;
+    width: 90vw;
     margin-top: 10px;
     margin-bottom: 30px;
+  }
+
+  .colors {
+    flex-direction: column;
   }
 }
 </style>
