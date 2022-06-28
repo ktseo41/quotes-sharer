@@ -322,7 +322,7 @@ input[type="number"] {
   article {
     width: 90vw;
     height: 90vw;
-    padding: 0;
+    padding: 10px;
   }
 
   .buttons {
@@ -341,6 +341,14 @@ input[type="number"] {
 
   .colors {
     flex-direction: column;
+  }
+
+  .contents-inputs {
+    width: 90vw;
+
+    & textarea {
+      width: 90vw;
+    }
   }
 }
 </style>
