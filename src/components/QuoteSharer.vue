@@ -35,6 +35,10 @@ const presets = [
     backgroundColor: "#005f73",
     textColor: "#fafafa",
   },
+  {
+    backgroundColor: "#ffd885",
+    textColor: "#004d05",
+  },
 ];
 
 const bindColors = (preset: Preset) => {
@@ -107,6 +111,73 @@ const downloadImage = function () {
           @click="showConfig = !showConfig"
         />
       </div>
+      <div v-if="showConfig" class="detail-configs">
+        <h3 class="mb-1">프리셋</h3>
+        <ul class="flex presets">
+          <li
+            :key="`${backgroundColor}-${i}`"
+            v-for="({ backgroundColor, textColor }, i) in presets"
+          >
+            <button
+              class="shadow-md"
+              :style="{ backgroundColor, color: textColor }"
+              @click="bindColors({ backgroundColor, textColor })"
+            >
+              {{ textColor }} on {{ backgroundColor }}
+            </button>
+          </li>
+        </ul>
+        <br />
+        <div class="flex colors">
+          <div>
+            <h3>배경색</h3>
+            <div class="flex mt-1">
+              <input
+                class="mr-2"
+                v-model="backgroundColor"
+                type="color"
+                name="backgroundColorColor"
+                id="backgroundColorColor"
+              />
+              <input
+                class="border border-slate-300 rounded-sm focus:outline-none focus:outline-sky-500 focus:ring-1 focus:ring-sky-500 pl-1 mr-2"
+                v-model="backgroundColor"
+                type="text"
+                name="backgroundColorText"
+                id="backgroundColorText"
+              />
+            </div>
+          </div>
+          <div>
+            <h3>글자색</h3>
+            <div class="flex mt-1">
+              <input
+                class="mr-2"
+                v-model="textColor"
+                type="color"
+                name="textColorColor"
+                id="textColorColor"
+              />
+              <input
+                class="border border-slate-300 rounded-sm focus:outline-none focus:outline-sky-500 focus:ring-1 focus:ring-sky-500 pl-1 mr-2"
+                v-model="textColor"
+                type="text"
+                name="textColorText"
+                id="textColorText"
+              />
+            </div>
+          </div>
+        </div>
+        <br />
+        <h3>본문사이즈</h3>
+        <input
+          class="mt-1 p-1 border border-slate-300 rounded-sm focus:outline-none focus:outline-sky-500 focus:ring-1 focus:ring-sky-500"
+          v-model="paragraphFontSize"
+          type="number"
+          name="pFontSize"
+          id="pFontSize"
+        />
+      </div>
     </div>
     <div class="configs flex justify-center">
       <div class="contents-inputs">
@@ -139,56 +210,6 @@ const downloadImage = function () {
         <br />
         <br />
       </div>
-      <div v-if="showConfig" class="features p-6">
-        <h3>배경색</h3>
-        <input
-          v-model="backgroundColor"
-          type="color"
-          name="backgroundColorColor"
-          id="backgroundColorColor"
-        />
-        <input
-          v-model="backgroundColor"
-          type="text"
-          name="backgroundColorText"
-          id="backgroundColorText"
-        />
-        <h3>글자색</h3>
-        <input
-          v-model="textColor"
-          type="color"
-          name="textColorColor"
-          id="textColorColor"
-        />
-        <input
-          v-model="textColor"
-          type="text"
-          name="textColorText"
-          id="textColorText"
-        />
-        <h3>프리셋</h3>
-        <ul>
-          <li
-            :key="`${backgroundColor}-${i}`"
-            v-for="({ backgroundColor, textColor }, i) in presets"
-          >
-            <button
-              :style="{ backgroundColor, color: textColor }"
-              @click="bindColors({ backgroundColor, textColor })"
-            >
-              {{ textColor }} on {{ backgroundColor }}
-            </button>
-          </li>
-        </ul>
-        <br />
-        <h3>본문사이즈</h3>
-        <input
-          v-model="paragraphFontSize"
-          type="number"
-          name="pFontSize"
-          id="pFontSize"
-        />
-      </div>
     </div>
   </section>
 </template>
@@ -196,12 +217,6 @@ const downloadImage = function () {
 section {
   display: grid;
   grid-template-columns: 50vw 50vw;
-}
-
-@media (max-width: 768px) {
-  section {
-    grid-template-columns: 100vw;
-  }
 }
 
 .wrapper {
@@ -255,8 +270,63 @@ input#content {
 .buttons {
   width: 350px;
 
-  *:not(:first-child) {
+  img:not(:first-child) {
     margin-left: 5px;
+  }
+}
+
+.detail-configs {
+  position: absolute;
+  top: 100%;
+  left: 25.5%;
+  right: 26%;
+}
+
+.presets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+
+  & li {
+    align-self: stretch;
+    justify-self: stretch;
+  }
+
+  & li button {
+    border-radius: 2px;
+    padding: 3px;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.colors {
+  & input[type="text"] {
+    width: 100px;
+  }
+}
+
+input[type="number"] {
+  width: 100px;
+}
+
+@media (max-width: 768px) {
+  section {
+    grid-template-columns: 1fr;
+    padding: 30px 20px 0 20px;
+  }
+
+  article {
+    padding: 0;
+  }
+
+  .detail-configs {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    margin-top: 10px;
+    margin-bottom: 30px;
   }
 }
 </style>
