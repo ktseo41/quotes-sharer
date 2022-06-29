@@ -21,4 +21,4 @@ jobs:
       run: npm run build
 
     - name: deploy
-      uses: cd dist && ls -al
+      run: cd dist && ls -al
