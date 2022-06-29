@@ -1,5 +1,5 @@
-name: deploy-test
-on:
+name: Deploy Test 2
+on: 
   push:
     branches:
       - main
@@ -14,11 +14,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@main
 
-    - name: install dependencies
-      uses: npm install
+    - name: Install Dependencies
+      run: npm install
 
     - name: build
-      uses: npm run build
+      run: npm run build
 
     - name: deploy
-      uses: cd dist && git init && git checkout -b main && git commit -m 'deploy' && git push -f https://github.com/ktseo41/quotes-sharer main:gh-pages
+      uses: cd dist && ls -al
