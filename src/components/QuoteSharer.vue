@@ -7,6 +7,8 @@ const { toPng } = domToImage;
 
 const content = ref("");
 
+// "에 대중을 옷을 뼈 그들은 부패뿐이다. 품고 행복스럽고 보는 있는 청춘을 열매를 철환하였는가?"
+
 const title = ref("");
 const titleText = computed(() =>
   title.value.length ? `⟪ ${title.value} ⟫` : ""
@@ -95,6 +97,7 @@ onMounted(() => {
   <section>
     <textarea
       ref="sharing"
+      v-model="content"
       class="shadow-lg"
       spellcheck="false"
       :style="{
@@ -144,14 +147,14 @@ textarea {
   box-sizing: border-box;
   outline: none;
   border-radius: 0;
-  resize: vertical;
+  resize: none;
 }
 
 .bottom-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 15px;
+  margin-top: 20px;
   .presets {
     & span {
       width: 8vw;
