@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, onMounted } from "vue";
+import { computed, ref } from "vue";
 // import { toPng } from "html-to-image";
 import domToImage from "dom-to-image";
 import LoadingIcon from "../assets/LoadingIcon.vue";
 const { toPng } = domToImage;
 
 const content = ref("");
+const _content = ref();
 
 // "에 대중을 옷을 뼈 그들은 부패뿐이다. 품고 행복스럽고 보는 있는 청춘을 열매를 철환하였는가?"
 
@@ -88,24 +89,29 @@ const downloadImage = function () {
       isLoadingImage.value = false;
     });
 };
-
-onMounted(() => {
-  sharing.value.focus();
-});
 </script>
 <template>
   <section>
-    <textarea
+    <div
       ref="sharing"
-      v-model="content"
-      class="shadow-lg"
-      spellcheck="false"
+      class="shadow-lg wrapper"
       :style="{
         color: textColor,
         backgroundColor,
         fontSize: `${paragraphFontSize}px`,
       }"
-    ></textarea>
+    >
+      <div
+        ref="_content"
+        class="content"
+        contenteditable
+        spellcheck="false"
+      ></div>
+      <div class="author-and-title">
+        <h4 class="title">{{ titleText }}</h4>
+        <span class="author">{{ authorText }}</span>
+      </div>
+    </div>
     <div class="bottom-bar">
       <div class="presets">
         <span
@@ -130,6 +136,24 @@ onMounted(() => {
       />
       <LoadingIcon width="40" height="40" v-else />
     </div>
+    <div class="additional-infos">
+      <h3 class="mb-1 mt-3 font-semibold">책</h3>
+      <input
+        class="border rounded px-2 py-1"
+        type="text"
+        v-model="title"
+        name="author"
+        id="author"
+      />
+      <h3 class="mb-1 mt-3 font-semibold">저자</h3>
+      <input
+        class="border rounded px-2 py-1"
+        type="text"
+        v-model="author"
+        name="author"
+        id="author"
+      />
+    </div>
   </section>
 </template>
 <style lang="scss" scoped>
@@ -139,15 +163,30 @@ section {
   padding-top: 40px;
 }
 
-textarea {
+.content {
   width: 90vw;
-  height: 90vw;
+  height: 75vw;
   max-width: 350px;
-  padding: 12px 20px;
+  padding: 12px 20px 0 20px;
   box-sizing: border-box;
   outline: none;
   border-radius: 0;
   resize: none;
+}
+
+.author-and-title {
+  display: flex;
+  align-items: center;
+  height: 15vw;
+  padding: 20px;
+
+  .title {
+    margin-right: 5px;
+  }
+
+  .author {
+    font-size: 13px;
+  }
 }
 
 .bottom-bar {
@@ -182,5 +221,9 @@ textarea {
     margin-right: 8px;
     cursor: pointer;
   }
+}
+
+.additional-infos {
+  margin: 8px 0 0 4px;
 }
 </style>
