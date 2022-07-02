@@ -12,4 +12,7 @@ export default defineConfig({
     },
   },
   base: "/quotes-sharer/",
+  server: {
+    host: true,
+  },
 });
