@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-// import { toPng } from "html-to-image";
 import domToImage from "dom-to-image";
 import LoadingIcon from "../assets/LoadingIcon.vue";
 const { toPng } = domToImage;
@@ -8,11 +7,9 @@ const { toPng } = domToImage;
 const content = ref("");
 const _content = ref();
 
-// "에 대중을 옷을 뼈 그들은 부패뿐이다. 품고 행복스럽고 보는 있는 청춘을 열매를 철환하였는가?"
-
 const title = ref("");
 const titleText = computed(() =>
-  title.value.length ? `⟪ ${title.value} ⟫` : ""
+  title.value.length ? `『${title.value}』` : ""
 );
 
 const author = ref("");
@@ -89,6 +86,26 @@ const downloadImage = function () {
       isLoadingImage.value = false;
     });
 };
+
+// share
+function share() {
+  if (!navigator.canShare) {
+    alert("지원하지 않는 브라우저입니다.");
+    return;
+  }
+
+  const text = `${titleText.value}${authorText.value}`;
+  const url = window.location.href;
+  const file = sharing.value;
+  const options = {
+    title: text,
+    text: text,
+    url,
+    file,
+  };
+
+  navigator.share(options);
+}
 </script>
 <template>
   <section>
@@ -120,6 +137,14 @@ const downloadImage = function () {
           가
         </span>
       </div>
+      <img
+        width="40"
+        height="40"
+        class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
+        src="../assets/ic_fluent_settings_24_filled.svg"
+        alt="다운로드"
+        @click="share"
+      />
       <img
         v-if="!isLoadingImage"
         width="48"
