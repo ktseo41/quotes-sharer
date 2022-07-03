@@ -101,12 +101,7 @@ const downloadImage = function () {
         fontSize: `${paragraphFontSize}px`,
       }"
     >
-      <div
-        ref="_content"
-        class="content"
-        contenteditable
-        spellcheck="false"
-      ></div>
+      <textarea ref="_content" class="content" spellcheck="false"></textarea>
       <div class="author-and-title">
         <h4 class="title">{{ titleText }}</h4>
         <span class="author">{{ authorText }}</span>
@@ -165,19 +160,21 @@ section {
 
 .content {
   width: 90vw;
-  height: 75vw;
   max-width: 350px;
-  padding: 12px 20px 0 20px;
+  height: 75vw;
   box-sizing: border-box;
-  outline: none;
+  padding: 12px 20px 0;
+  background-color: initial;
   border-radius: 0;
+  color: initial;
+  outline: none;
   resize: none;
 }
 
 .author-and-title {
   display: flex;
-  align-items: center;
   height: 15vw;
+  align-items: center;
   padding: 20px;
 
   .title {
@@ -191,23 +188,24 @@ section {
 
 .bottom-bar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-top: 20px;
+
   .presets {
     & span {
-      width: 8vw;
-      height: 8vw;
-      max-width: 25px;
-      max-height: 25px;
       display: inline-flex;
+      width: 8vw;
+      max-width: 25px;
+      height: 8vw;
+      max-height: 25px;
       box-sizing: border-box;
-      justify-content: center;
       align-items: center;
-      font-size: 1.2rem;
+      justify-content: center;
       padding: 1.5rem;
       border-radius: 0.5rem;
       cursor: pointer;
+      font-size: 1.2rem;
 
       &:not(:first-child) {
         margin-left: 10px;
