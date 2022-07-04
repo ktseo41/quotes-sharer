@@ -293,6 +293,7 @@ textarea {
       margin-right: 1rem;
     }
 
+    svg,
     img[alt="다운로드"] {
       margin-right: 0.6rem;
       cursor: pointer;
