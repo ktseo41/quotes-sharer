@@ -143,6 +143,7 @@ function share() {
     })
     .catch((error) => {
       console.error(error);
+      alert(error);
       isLoadingImage.value = false;
     });
 }
@@ -233,9 +234,9 @@ textarea {
   width: 100%;
   height: calc(100% - 3rem);
   padding: 1rem 1rem 0;
-  background-color: initial;
+  background-color: inherit;
   border-radius: 0;
-  color: initial;
+  color: inherit;
   outline: none;
   resize: none;
 }
