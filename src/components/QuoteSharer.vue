@@ -88,23 +88,63 @@ const downloadImage = function () {
 };
 
 // share
+
+// https://helloinyong.tistory.com/233
+const dataURLtoFile = (dataurl: string, fileName: string) => {
+  var arr = dataurl.split(","),
+    mime = arr[0]?.match(/:(.*?);/)?.[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new File([u8arr], fileName, { type: mime });
+};
+
 function share() {
   if (!navigator.canShare) {
     alert("지원하지 않는 브라우저입니다.");
     return;
   }
 
-  const text = `${titleText.value}${authorText.value}`;
-  const url = window.location.href;
-  const file = sharing.value;
-  const options = {
-    title: text,
-    text: text,
-    url,
-    file,
+  const scale = 3;
+  isLoadingImage.value = true;
+
+  const style = {
+    transform: "scale(" + scale + ")",
+    transformOrigin: "top left",
+    width: sharing.value.offsetWidth + "px",
+    height: sharing.value.offsetHeight + "px",
   };
 
-  navigator.share(options);
+  const param = {
+    height: sharing.value.offsetHeight * scale,
+    width: sharing.value.offsetWidth * scale,
+    quality: 1,
+    style,
+  };
+
+  toPng(sharing.value, param)
+    .then((dataUrl) => {
+      const text = `${titleText.value}${authorText.value}`;
+      const url = window.location.href;
+      const file = dataURLtoFile(dataUrl, title.value);
+      const options = {
+        title: text,
+        text: text,
+        url,
+        file,
+      };
+      navigator.share(options);
+      isLoadingImage.value = false;
+    })
+    .catch((error) => {
+      console.error(error);
+      isLoadingImage.value = false;
+    });
 }
 </script>
 <template>
