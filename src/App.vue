@@ -8,24 +8,25 @@ import { RouterView } from "vue-router";
 
 <style>
 @import "@/assets/base.css";
+
 a,
 .green {
+  color: hsl(160deg 100% 37% / 100%);
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
 }
 
 @media (hover: hover) {
   a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+    background-color: hsl(160deg 100% 37% / 20%);
   }
 }
 
 nav {
   width: 100%;
+  margin-top: 2rem;
   font-size: 12px;
   text-align: center;
-  margin-top: 2rem;
 }
 
 nav a.router-link-exact-active {
@@ -46,26 +47,22 @@ nav a:first-of-type {
   border: 0;
 }
 
+body {
+  display: flex;
+  justify-content: center;
+}
+
 @media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    margin-top: -12vh;
-  }
-
   header {
     display: flex;
-    place-items: center;
     padding-right: calc(var(--section-gap) / 2);
+    place-items: center;
   }
 
   header .wrapper {
     display: flex;
-    place-items: flex-start;
     flex-wrap: wrap;
+    place-items: flex-start;
   }
 
   .logo {
@@ -73,12 +70,11 @@ nav a:first-of-type {
   }
 
   nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
     padding: 1rem 0;
     margin-top: 1rem;
+    margin-left: -1rem;
+    font-size: 1rem;
+    text-align: left;
   }
 }
 </style>

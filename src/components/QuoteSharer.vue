@@ -137,24 +137,23 @@ function share() {
           가
         </span>
       </div>
-      <img
-        width="40"
-        height="40"
-        class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
-        src="../assets/ic_fluent_settings_24_filled.svg"
-        alt="다운로드"
-        @click="share"
-      />
-      <img
-        v-if="!isLoadingImage"
-        width="48"
-        height="48"
-        class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
-        src="../assets/ic_fluent_arrow_downloaded_24_filled.svg"
-        alt="다운로드"
-        @click="downloadImage"
-      />
-      <LoadingIcon width="40" height="40" v-else />
+      <div class="buttons">
+        <img
+          v-if="$route.query.test === 'true'"
+          class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
+          src="../assets/ic_fluent_settings_24_filled.svg"
+          alt="내보내기"
+          @click="share"
+        />
+        <img
+          v-if="!isLoadingImage"
+          class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
+          src="../assets/ic_fluent_arrow_downloaded_24_filled.svg"
+          alt="다운로드"
+          @click="downloadImage"
+        />
+        <LoadingIcon width="40" height="40" v-else />
+      </div>
     </div>
     <div class="additional-infos">
       <h3 class="mb-1 mt-3 font-semibold">책</h3>
@@ -181,14 +180,19 @@ section {
   display: grid;
   justify-content: center;
   padding-top: 40px;
+  justify-items: center;
 }
 
-.content {
-  width: 90vw;
-  max-width: 350px;
-  height: 75vw;
-  box-sizing: border-box;
-  padding: 12px 20px 0;
+.wrapper {
+  width: 20rem;
+  height: 20rem;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  height: calc(100% - 3rem);
+  padding: 1rem 1rem 0;
   background-color: initial;
   border-radius: 0;
   color: initial;
@@ -198,21 +202,23 @@ section {
 
 .author-and-title {
   display: flex;
-  height: 15vw;
-  align-items: center;
-  padding: 20px;
+  width: 100%;
+  height: 3rem;
+  align-items: flex-end;
+  padding: 0 1rem 1rem;
 
   .title {
-    margin-right: 5px;
+    margin-right: 0.5rem;
   }
 
   .author {
-    font-size: 13px;
+    font-size: 0.9rem;
   }
 }
 
 .bottom-bar {
   display: flex;
+  width: 100%;
   align-items: center;
   justify-content: space-between;
   margin-top: 20px;
@@ -220,14 +226,10 @@ section {
   .presets {
     & span {
       display: inline-flex;
-      width: 8vw;
-      max-width: 25px;
-      height: 8vw;
-      max-height: 25px;
-      box-sizing: border-box;
+      width: 2.5rem;
+      height: 2.5rem;
       align-items: center;
       justify-content: center;
-      padding: 1.5rem;
       border-radius: 0.5rem;
       cursor: pointer;
       font-size: 1.2rem;
@@ -238,15 +240,31 @@ section {
     }
   }
 
-  img[alt="다운로드"] {
-    width: 8vw;
-    height: 8vw;
-    margin-right: 8px;
-    cursor: pointer;
+  .buttons {
+    display: flex;
+
+    img {
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+
+    img[alt="내보내기"] {
+      margin-right: 1rem;
+    }
+
+    img[alt="다운로드"] {
+      margin-right: 0.6rem;
+      cursor: pointer;
+    }
   }
 }
 
 .additional-infos {
-  margin: 8px 0 0 4px;
+  width: 100%;
+  margin-top: 1.5rem;
+
+  & input {
+    width: 65%;
+  }
 }
 </style>
