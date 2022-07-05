@@ -128,14 +128,12 @@ function share() {
   };
 
   toPng(sharing.value, param)
-    .then((dataUrl) => {
+    .then((dataUrl: string) => {
       const text = `${titleText.value}${authorText.value}`;
-      const url = window.location.href;
-      const file = dataURLtoFile(dataUrl, title.value);
+      const file = [dataURLtoFile(dataUrl, title.value)];
       const options = {
         title: text,
         text: text,
-        url,
         file,
       };
       navigator.share(options);
