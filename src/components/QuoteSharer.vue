@@ -216,13 +216,14 @@ textarea {
 }
 
 .author-and-title {
-  display: flex;
+  display: table-cell;
   width: 100%;
   height: 3rem;
-  align-items: flex-end;
+  vertical-align: bottom;
   padding: 0 1rem 1rem;
 
   .title {
+    display: inline;
     margin-right: 0.5rem;
   }
 
