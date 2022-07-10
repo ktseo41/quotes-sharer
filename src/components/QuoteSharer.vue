@@ -51,7 +51,7 @@ const bindColors = (preset: Preset) => {
 const paragraphFontSize = ref(17);
 
 // 이미지 다운로드 혹은 공유
-const canShare = ref(navigator?.canShare?.());
+const canShare = ref("canShare" in navigator);
 const sharing = ref();
 const isLoadingImage = ref(false);
 
@@ -88,8 +88,6 @@ const downloadImage = function () {
     });
 };
 
-// share
-// https://stackoverflow.com/questions/61250048/how-to-share-a-single-base64-url-image-via-the-web-share-api
 function share() {
   if (canShare.value) {
     alert("지원하지 않는 브라우저입니다.");
@@ -115,6 +113,7 @@ function share() {
 
   toPng(sharing.value, param)
     .then(async (dataUrl: string) => {
+      // https://stackoverflow.com/questions/61250048/how-to-share-a-single-base64-url-image-via-the-web-share-api
       const blob = await (await fetch(dataUrl)).blob();
       const file = new File([blob], `${title.value}.png`, { type: blob.type });
       const text = `${titleText.value}${authorText.value}`;
