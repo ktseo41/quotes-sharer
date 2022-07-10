@@ -51,7 +51,6 @@ const bindColors = (preset: Preset) => {
 const paragraphFontSize = ref(17);
 
 // 이미지 다운로드 혹은 공유
-const canShare = ref("canShare" in navigator);
 const sharing = ref();
 const isLoadingImage = ref(false);
 
@@ -89,7 +88,7 @@ const downloadImage = function () {
 };
 
 function share() {
-  if (canShare.value) {
+  if (!navigator?.canShare?.()) {
     alert("지원하지 않는 브라우저입니다.");
     return;
   }
@@ -164,18 +163,11 @@ function share() {
       </div>
       <div class="buttons">
         <img
-          v-if="canShare && !isLoadingImage"
+          v-if="!isLoadingImage"
           class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
           src="../assets/ic_fluent_share_ios_24_filled.svg"
           alt="내보내기"
           @click="share"
-        />
-        <img
-          v-if="!canShare && !isLoadingImage"
-          class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
-          src="../assets/ic_fluent_arrow_downloaded_24_filled.svg"
-          alt="받기"
-          @click="downloadImage"
         />
         <LoadingIcon width="40" height="40" v-else />
       </div>
