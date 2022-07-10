@@ -113,10 +113,10 @@ function share() {
     .then(async (dataUrl: string) => {
       // https://stackoverflow.com/questions/61250048/how-to-share-a-single-base64-url-image-via-the-web-share-api
       const blob = await (await fetch(dataUrl)).blob();
-      const file = new File([blob], `${title.value}.png`, { type: blob.type });
-      const text = `${title.value}`;
+      const file = new File([blob], `${title.value || "Untitled"}.png`, {
+        type: blob.type,
+      });
       const options = {
-        title: text,
         files: [file],
       };
       navigator.share(options);
