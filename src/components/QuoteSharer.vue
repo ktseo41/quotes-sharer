@@ -89,7 +89,7 @@ const downloadImage = function () {
 
 // share
 
-// https://stackoverflow.com/questions/61250048/how-to-share-a-single-base64-url-image-via-the-web-share-api
+// https://helloinyong.tistory.com/233
 function share() {
   if (!navigator.canShare) {
     alert("지원하지 않는 브라우저입니다.");
@@ -121,7 +121,7 @@ function share() {
       const options = {
         title: text,
         text: text,
-        file: [file],
+        files: [file],
       };
       navigator.share(options);
       isLoadingImage.value = false;
