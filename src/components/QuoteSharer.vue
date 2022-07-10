@@ -50,7 +50,8 @@ const bindColors = (preset: Preset) => {
 
 const paragraphFontSize = ref(17);
 
-// 이미지 다운로드
+// 이미지 다운로드 혹은 공유
+const canShare = ref(navigator?.canShare?.());
 const sharing = ref();
 const isLoadingImage = ref(false);
 
@@ -88,10 +89,9 @@ const downloadImage = function () {
 };
 
 // share
-
-// https://helloinyong.tistory.com/233
+// https://stackoverflow.com/questions/61250048/how-to-share-a-single-base64-url-image-via-the-web-share-api
 function share() {
-  if (!navigator.canShare) {
+  if (canShare.value) {
     alert("지원하지 않는 브라우저입니다.");
     return;
   }
@@ -165,17 +165,20 @@ function share() {
       </div>
       <div class="buttons">
         <img
-          v-if="$route.query.test === 'true' && !isLoadingImage"
+          v-if="canShare && !isLoadingImage"
           class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
           src="../assets/ic_fluent_share_ios_24_filled.svg"
           alt="내보내기"
           @click="share"
         />
-        <LoadingIcon
-          width="40"
-          height="40"
-          v-else-if="$route.query.test === 'true' && isLoadingImage"
+        <img
+          v-if="!canShare && !isLoadingImage"
+          class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
+          src="../assets/ic_fluent_arrow_downloaded_24_filled.svg"
+          alt="받기"
+          @click="downloadImage"
         />
+        <LoadingIcon width="40" height="40" v-else />
       </div>
     </div>
     <div class="additional-infos">
