@@ -89,21 +89,7 @@ const downloadImage = function () {
 
 // share
 
-// https://helloinyong.tistory.com/233
-const dataURLtoFile = (dataurl: string, fileName: string) => {
-  var arr = dataurl.split(","),
-    mime = arr[0]?.match(/:(.*?);/)?.[1],
-    bstr = atob(arr[1]),
-    n = bstr.length,
-    u8arr = new Uint8Array(n);
-
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-
-  return new File([u8arr], fileName, { type: mime });
-};
-
+// https://stackoverflow.com/questions/61250048/how-to-share-a-single-base64-url-image-via-the-web-share-api
 function share() {
   if (!navigator.canShare) {
     alert("지원하지 않는 브라우저입니다.");
@@ -128,13 +114,14 @@ function share() {
   };
 
   toPng(sharing.value, param)
-    .then((dataUrl: string) => {
+    .then(async (dataUrl: string) => {
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], `${title.value}.png`, { type: blob.type });
       const text = `${titleText.value}${authorText.value}`;
-      const file = [dataURLtoFile(dataUrl, title.value)];
       const options = {
         title: text,
         text: text,
-        file,
+        file: [file],
       };
       navigator.share(options);
       isLoadingImage.value = false;
@@ -178,20 +165,17 @@ function share() {
       </div>
       <div class="buttons">
         <img
-          v-if="$route.query.test === 'true'"
+          v-if="$route.query.test === 'true' && !isLoadingImage"
           class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
-          src="../assets/ic_fluent_settings_24_filled.svg"
+          src="../assets/ic_fluent_share_ios_24_filled.svg"
           alt="내보내기"
           @click="share"
         />
-        <img
-          v-if="!isLoadingImage"
-          class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
-          src="../assets/ic_fluent_arrow_downloaded_24_filled.svg"
-          alt="다운로드"
-          @click="downloadImage"
+        <LoadingIcon
+          width="40"
+          height="40"
+          v-else-if="$route.query.test === 'true' && isLoadingImage"
         />
-        <LoadingIcon width="40" height="40" v-else />
       </div>
     </div>
     <div class="additional-infos">
