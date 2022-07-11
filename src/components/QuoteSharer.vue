@@ -50,7 +50,7 @@ const bindColors = (preset: Preset) => {
 
 const paragraphFontSize = ref(17);
 
-// 이미지 다운로드
+// 이미지 다운로드 혹은 공유
 const sharing = ref();
 const isLoadingImage = ref(false);
 
@@ -87,29 +87,11 @@ const downloadImage = function () {
     });
 };
 
-// share
-
-// https://helloinyong.tistory.com/233
-const dataURLtoFile = (dataurl: string, fileName: string) => {
-  var arr = dataurl.split(","),
-    mime = arr[0]?.match(/:(.*?);/)?.[1],
-    bstr = atob(arr[1]),
-    n = bstr.length,
-    u8arr = new Uint8Array(n);
-
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-
-  return new File([u8arr], fileName, { type: mime });
-};
-
 function share() {
-  if (!navigator.canShare) {
-    alert("지원하지 않는 브라우저입니다.");
+  if (!navigator?.canShare) {
+    downloadImage();
     return;
   }
-
   const scale = 3;
   isLoadingImage.value = true;
 
@@ -128,13 +110,14 @@ function share() {
   };
 
   toPng(sharing.value, param)
-    .then((dataUrl: string) => {
-      const text = `${titleText.value}${authorText.value}`;
-      const file = [dataURLtoFile(dataUrl, title.value)];
+    .then(async (dataUrl: string) => {
+      // https://stackoverflow.com/questions/61250048/how-to-share-a-single-base64-url-image-via-the-web-share-api
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], `${title.value || "Untitled"}.png`, {
+        type: blob.type,
+      });
       const options = {
-        title: text,
-        text: text,
-        file,
+        files: [file],
       };
       navigator.share(options);
       isLoadingImage.value = false;
@@ -178,18 +161,11 @@ function share() {
       </div>
       <div class="buttons">
         <img
-          v-if="$route.query.test === 'true'"
-          class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
-          src="../assets/ic_fluent_settings_24_filled.svg"
-          alt="내보내기"
-          @click="share"
-        />
-        <img
           v-if="!isLoadingImage"
           class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
-          src="../assets/ic_fluent_arrow_downloaded_24_filled.svg"
-          alt="다운로드"
-          @click="downloadImage"
+          src="../assets/ic_fluent_share_ios_24_filled.svg"
+          alt="내보내기"
+          @click="share"
         />
         <LoadingIcon width="40" height="40" v-else />
       </div>
@@ -240,13 +216,14 @@ textarea {
 }
 
 .author-and-title {
-  display: flex;
+  display: table-cell;
   width: 100%;
   height: 3rem;
-  align-items: flex-end;
+  vertical-align: bottom;
   padding: 0 1rem 1rem;
 
   .title {
+    display: inline;
     margin-right: 0.5rem;
   }
 
