@@ -89,7 +89,7 @@ const downloadImage = function () {
 
 function share() {
   if (!navigator?.canShare) {
-    alert("지원하지 않는 브라우저입니다.");
+    downloadImage();
     return;
   }
   const scale = 3;
