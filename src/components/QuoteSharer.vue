@@ -194,13 +194,16 @@ function share() {
 section {
   display: grid;
   justify-content: center;
-  padding-top: 40px;
+  padding-top: 1rem;
   justify-items: center;
 }
 
 .wrapper {
-  width: 20rem;
-  height: 20rem;
+  width: calc(100vw - 2rem);
+  max-width: 25rem;
+  height: calc(100vw - 2rem);
+  max-height: 25rem;
+  padding: 1rem;
 }
 
 textarea {
@@ -219,8 +222,8 @@ textarea {
   display: table-cell;
   width: 100%;
   height: 3rem;
-  vertical-align: bottom;
   padding: 0 1rem 1rem;
+  vertical-align: bottom;
 
   .title {
     display: inline;
@@ -259,19 +262,15 @@ textarea {
   .buttons {
     display: flex;
 
+    svg {
+      width: 2.8rem;
+      height: 2.8rem;
+    }
+
     img {
-      width: 1.8rem;
-      height: 1.8rem;
-    }
-
-    img[alt="내보내기"] {
-      margin-right: 1rem;
-    }
-
-    svg,
-    img[alt="다운로드"] {
-      margin-right: 0.6rem;
-      cursor: pointer;
+      width: 2.8rem;
+      height: 2.8rem;
+      padding: 0.5rem;
     }
   }
 }
