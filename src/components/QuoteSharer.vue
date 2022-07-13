@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import domToImage from "dom-to-image";
 import LoadingIcon from "../assets/LoadingIcon.vue";
 const { toPng } = domToImage;
@@ -24,7 +24,7 @@ type Preset = {
   backgroundColor: string;
   textColor: string;
 };
-const presets = [
+const _presets = [
   {
     backgroundColor: "#fff4ea",
     textColor: "#2c2c2c",
@@ -43,6 +43,8 @@ const presets = [
   },
 ];
 
+const presets = ref<Preset[]>([]);
+
 const bindColors = (preset: Preset) => {
   backgroundColor.value = preset.backgroundColor;
   textColor.value = preset.textColor;
@@ -51,6 +53,24 @@ const bindColors = (preset: Preset) => {
 const paragraphFontSize = ref(17);
 
 const presetsOn = ref(false);
+watch(presetsOn, (val) => {
+  if (val) {
+    const intervalId = setInterval(() => {
+      const nextPreset = _presets.slice(
+        presets.value.length,
+        presets.value.length + 1
+      );
+
+      if (nextPreset.length) {
+        presets.value.push(nextPreset[0]);
+      } else {
+        clearInterval(intervalId);
+      }
+    }, 30);
+  } else {
+    presets.value = [];
+  }
+});
 
 // 이미지 다운로드 혹은 공유
 const sharing = ref();
@@ -154,18 +174,19 @@ function share() {
           >가</span
         >
       </div>
-      <div v-else class="presets">
+      <div class="presets">
         <img
+          v-show="presetsOn"
           src="../assets/ic_fluent_arrow_ios_left_24.svg"
           @click="presetsOn = false"
           alt="닫기"
         />
-        <transition-group name="flip-list">
+        <transition-group name="list-complete">
           <span
             v-for="({ textColor, backgroundColor: bgColor }, idx) in presets"
             :key="`${textColor.slice(0, 1)}-${idx}`"
             :style="{ color: textColor, backgroundColor: bgColor }"
-            class="shadow-md"
+            class="shadow-md preset-item"
             :class="{ 'shadow-inner': bgColor === backgroundColor }"
             @click="bindColors({ textColor, backgroundColor: bgColor })"
           >
@@ -339,7 +360,17 @@ textarea {
 }
 
 // animation
-.flip-list-move {
-  transition: transform 0.8s ease;
+.preset-item {
+  transition: all 0.1s ease;
+}
+
+.list-complete-enter-from,
+.list-complete-leave-to {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.list-complete-leave-active {
+  position: absolute;
 }
 </style>
