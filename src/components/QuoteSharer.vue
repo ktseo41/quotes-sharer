@@ -50,6 +50,8 @@ const bindColors = (preset: Preset) => {
 
 const paragraphFontSize = ref(17);
 
+const presetsOn = ref(false);
+
 // 이미지 다운로드 혹은 공유
 const sharing = ref();
 const isLoadingImage = ref(false);
@@ -147,17 +149,29 @@ function share() {
       </div>
     </div>
     <div class="bottom-bar">
-      <div class="presets">
-        <span
-          v-for="({ textColor, backgroundColor: bgColor }, idx) in presets"
-          :key="`${textColor.slice(0, 1)}-${idx}`"
-          :style="{ color: textColor, backgroundColor: bgColor }"
-          class="shadow-md"
-          :class="{ 'shadow-inner': bgColor === backgroundColor }"
-          @click="bindColors({ textColor, backgroundColor: bgColor })"
+      <div v-if="!presetsOn" class="configs">
+        <span class="toggle-presets shadow-md" @click="presetsOn = true"
+          >가</span
         >
-          가
-        </span>
+      </div>
+      <div v-else class="presets">
+        <img
+          src="../assets/ic_fluent_arrow_ios_left_24.svg"
+          @click="presetsOn = false"
+          alt="닫기"
+        />
+        <transition-group name="flip-list">
+          <span
+            v-for="({ textColor, backgroundColor: bgColor }, idx) in presets"
+            :key="`${textColor.slice(0, 1)}-${idx}`"
+            :style="{ color: textColor, backgroundColor: bgColor }"
+            class="shadow-md"
+            :class="{ 'shadow-inner': bgColor === backgroundColor }"
+            @click="bindColors({ textColor, backgroundColor: bgColor })"
+          >
+            가
+          </span>
+        </transition-group>
       </div>
       <div class="buttons">
         <img
@@ -242,7 +256,47 @@ textarea {
   justify-content: space-between;
   margin-top: 20px;
 
+  .toggle-presets {
+    display: inline-flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    /* stylelint-disable-next-line declaration-colon-newline-after */
+    background-image: linear-gradient(
+      to right bottom,
+      #d16ba5,
+      #c777b9,
+      #ba83ca,
+      #aa8fd8,
+      #9a9ae1,
+      #8aa7ec,
+      #79b3f4,
+      #69bff8,
+      #52cffe,
+      #41dfff,
+      #46eefa,
+      #5ffbf1
+    );
+    border-radius: 0.5rem;
+    color: #505050;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
   .presets {
+    display: flex;
+    align-items: center;
+
+    & img {
+      display: inline-flex;
+      width: 2.8rem;
+      height: 2.8rem;
+      padding: 0.5rem;
+      cursor: pointer;
+    }
+
     & span {
       display: inline-flex;
       width: 2.5rem;
@@ -253,7 +307,7 @@ textarea {
       cursor: pointer;
       font-size: 1.2rem;
 
-      &:not(:first-child) {
+      &:not(:nth-child(2)) {
         margin-left: 10px;
       }
     }
@@ -282,5 +336,10 @@ textarea {
   & input {
     width: 65%;
   }
+}
+
+// animation
+.flip-list-move {
+  transition: transform 0.8s ease;
 }
 </style>
