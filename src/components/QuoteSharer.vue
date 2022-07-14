@@ -264,7 +264,6 @@ textarea {
   display: block;
   width: 100%;
   height: calc(100% - 3rem);
-  padding: 1rem 1rem 0;
   background-color: inherit;
   border-radius: 0;
   color: inherit;
@@ -276,7 +275,6 @@ textarea {
   display: table-cell;
   width: 100%;
   height: 3rem;
-  padding: 0 1rem 1rem;
   vertical-align: bottom;
 
   .title {
@@ -392,6 +390,7 @@ textarea {
 .list-complete-enter-active {
   transition: all 0.1s ease;
 }
+
 .list-complete-leave-active {
   transition: all 0.1s ease;
 }
