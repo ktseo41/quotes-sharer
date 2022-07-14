@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, unref, watch } from "vue";
 import domToImage from "dom-to-image";
 import LoadingIcon from "../assets/LoadingIcon.vue";
 const { toPng } = domToImage;
@@ -24,7 +24,7 @@ type Preset = {
   backgroundColor: string;
   textColor: string;
 };
-const presets = [
+const _presets = [
   {
     backgroundColor: "#fff4ea",
     textColor: "#2c2c2c",
@@ -43,12 +43,52 @@ const presets = [
   },
 ];
 
+const presets = ref<Preset[]>([]);
+
 const bindColors = (preset: Preset) => {
   backgroundColor.value = preset.backgroundColor;
   textColor.value = preset.textColor;
 };
 
 const paragraphFontSize = ref(17);
+
+const presetsOn = ref(false);
+
+const togglePresets = () => {
+  if (!presetsOn.value) {
+    presetsOn.value = !presetsOn.value;
+    const intervalId = setInterval(() => {
+      const nextPreset = _presets.slice(
+        presets.value.length,
+        presets.value.length + 1
+      );
+
+      if (nextPreset.length) {
+        presets.value.push(nextPreset[0]);
+      } else {
+        clearInterval(intervalId);
+      }
+    }, 30);
+    return;
+  }
+
+  const intervalId = setInterval(() => {
+    presets.value.pop();
+
+    if (!presets.value.length) {
+      clearInterval(intervalId);
+    }
+  }, 30);
+};
+
+let counter = 0;
+const checkIfCanHidePresets = () => {
+  counter++;
+  if (counter === _presets.length) {
+    presetsOn.value = false;
+    counter = 0;
+  }
+};
 
 // 이미지 다운로드 혹은 공유
 const sharing = ref();
@@ -147,17 +187,31 @@ function share() {
       </div>
     </div>
     <div class="bottom-bar">
+      <div v-if="!presetsOn" class="configs">
+        <span class="toggle-presets shadow-md" @click="togglePresets">가</span>
+      </div>
       <div class="presets">
-        <span
-          v-for="({ textColor, backgroundColor: bgColor }, idx) in presets"
-          :key="`${textColor.slice(0, 1)}-${idx}`"
-          :style="{ color: textColor, backgroundColor: bgColor }"
-          class="shadow-md"
-          :class="{ 'shadow-inner': bgColor === backgroundColor }"
-          @click="bindColors({ textColor, backgroundColor: bgColor })"
+        <img
+          v-show="presetsOn"
+          src="../assets/ic_fluent_arrow_ios_left_24.svg"
+          @click="togglePresets"
+          alt="닫기"
+        />
+        <transition-group
+          @after-leave="checkIfCanHidePresets"
+          name="list-complete"
         >
-          가
-        </span>
+          <span
+            v-for="({ textColor, backgroundColor: bgColor }, idx) in presets"
+            :key="`${textColor.slice(0, 1)}-${idx}`"
+            :style="{ color: textColor, backgroundColor: bgColor }"
+            class="shadow-md preset-item"
+            :class="{ 'shadow-inner': bgColor === backgroundColor }"
+            @click="bindColors({ textColor, backgroundColor: bgColor })"
+          >
+            가
+          </span>
+        </transition-group>
       </div>
       <div class="buttons">
         <img
@@ -242,7 +296,47 @@ textarea {
   justify-content: space-between;
   margin-top: 20px;
 
+  .toggle-presets {
+    display: inline-flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    /* stylelint-disable-next-line declaration-colon-newline-after */
+    background-image: linear-gradient(
+      to right bottom,
+      #d16ba5,
+      #c777b9,
+      #ba83ca,
+      #aa8fd8,
+      #9a9ae1,
+      #8aa7ec,
+      #79b3f4,
+      #69bff8,
+      #52cffe,
+      #41dfff,
+      #46eefa,
+      #5ffbf1
+    );
+    border-radius: 0.5rem;
+    color: #505050;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
   .presets {
+    display: flex;
+    align-items: center;
+
+    & img {
+      display: inline-flex;
+      width: 2.8rem;
+      height: 2.8rem;
+      padding: 0.5rem;
+      cursor: pointer;
+    }
+
     & span {
       display: inline-flex;
       width: 2.5rem;
@@ -253,7 +347,7 @@ textarea {
       cursor: pointer;
       font-size: 1.2rem;
 
-      &:not(:first-child) {
+      &:not(:nth-child(2)) {
         margin-left: 10px;
       }
     }
@@ -282,5 +376,23 @@ textarea {
   & input {
     width: 65%;
   }
+}
+
+// animation
+.list-complete-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.list-complete-leave-to {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.list-complete-enter-active {
+  transition: all 0.1s ease;
+}
+.list-complete-leave-active {
+  transition: all 0.1s ease;
 }
 </style>
