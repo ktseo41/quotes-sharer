@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref, unref, watch } from "vue";
 import domToImage from "dom-to-image";
 import LoadingIcon from "../assets/LoadingIcon.vue";
 const { toPng } = domToImage;
@@ -53,8 +53,10 @@ const bindColors = (preset: Preset) => {
 const paragraphFontSize = ref(17);
 
 const presetsOn = ref(false);
-watch(presetsOn, (val) => {
-  if (val) {
+
+const togglePresets = () => {
+  if (!presetsOn.value) {
+    presetsOn.value = !presetsOn.value;
     const intervalId = setInterval(() => {
       const nextPreset = _presets.slice(
         presets.value.length,
@@ -67,10 +69,26 @@ watch(presetsOn, (val) => {
         clearInterval(intervalId);
       }
     }, 30);
-  } else {
-    presets.value = [];
+    return;
   }
-});
+
+  const intervalId = setInterval(() => {
+    presets.value.pop();
+
+    if (!presets.value.length) {
+      clearInterval(intervalId);
+    }
+  }, 30);
+};
+
+let counter = 0;
+const checkIfCanHidePresets = () => {
+  counter++;
+  if (counter === _presets.length) {
+    presetsOn.value = false;
+    counter = 0;
+  }
+};
 
 // 이미지 다운로드 혹은 공유
 const sharing = ref();
@@ -170,18 +188,19 @@ function share() {
     </div>
     <div class="bottom-bar">
       <div v-if="!presetsOn" class="configs">
-        <span class="toggle-presets shadow-md" @click="presetsOn = true"
-          >가</span
-        >
+        <span class="toggle-presets shadow-md" @click="togglePresets">가</span>
       </div>
       <div class="presets">
         <img
           v-show="presetsOn"
           src="../assets/ic_fluent_arrow_ios_left_24.svg"
-          @click="presetsOn = false"
+          @click="togglePresets"
           alt="닫기"
         />
-        <transition-group name="list-complete">
+        <transition-group
+          @after-leave="checkIfCanHidePresets"
+          name="list-complete"
+        >
           <span
             v-for="({ textColor, backgroundColor: bgColor }, idx) in presets"
             :key="`${textColor.slice(0, 1)}-${idx}`"
@@ -360,17 +379,20 @@ textarea {
 }
 
 // animation
-.preset-item {
-  transition: all 0.1s ease;
+.list-complete-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
 }
 
-.list-complete-enter-from,
 .list-complete-leave-to {
   opacity: 0;
   transform: translateX(-30px);
 }
 
+.list-complete-enter-active {
+  transition: all 0.1s ease;
+}
 .list-complete-leave-active {
-  position: absolute;
+  transition: all 0.1s ease;
 }
 </style>
