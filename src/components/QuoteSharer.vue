@@ -188,7 +188,19 @@ function share() {
     </div>
     <div class="bottom-bar">
       <div v-if="!presetsOn" class="configs">
-        <span class="toggle-presets shadow-md" @click="togglePresets">가</span>
+        <img
+          @click="togglePresets"
+          src="../assets/ic_fluent_color_24_regular.svg"
+          alt="프리셋변경"
+        />
+        <img
+          src="../assets/ic_fluent_color_fill_24_regular.svg"
+          alt="배경색변경"
+        />
+        <img
+          src="../assets/ic_fluent_text_color_ga_24_regular.svg"
+          alt="글자색변경"
+        />
       </div>
       <div class="presets">
         <img
@@ -293,6 +305,20 @@ textarea {
   align-items: center;
   justify-content: space-between;
   margin-top: 20px;
+
+  .configs {
+    display: flex;
+
+    & *:not(:first-child) {
+      margin-left: 0.5rem;
+    }
+
+    & img {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.5rem;
+    }
+  }
 
   .toggle-presets {
     display: inline-flex;
