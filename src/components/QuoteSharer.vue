@@ -2,6 +2,7 @@
 import { computed, ref, unref, watch } from "vue";
 import domToImage from "dom-to-image";
 import LoadingIcon from "../assets/LoadingIcon.vue";
+import IconWithColors from "../assets/IconWithColors.vue";
 const { toPng } = domToImage;
 
 const content = ref("");
@@ -188,19 +189,42 @@ function share() {
     </div>
     <div class="bottom-bar">
       <div v-if="!presetsOn" class="configs">
-        <img
+        <IconWithColors
+          iconName="brush"
+          :colors="[
+            '#005F73',
+            '#29698E',
+            '#5670A2',
+            '#8575AD',
+            '#B178AD',
+            '#D77EA2',
+          ]"
           @click="togglePresets"
-          src="../assets/ic_fluent_color_24_regular.svg"
-          alt="프리셋변경"
-        />
-        <img
-          src="../assets/ic_fluent_color_fill_24_regular.svg"
-          alt="배경색변경"
-        />
-        <img
-          src="../assets/ic_fluent_text_color_ga_24_regular.svg"
-          alt="글자색변경"
-        />
+        ></IconWithColors>
+        <label for="background-color">
+          <IconWithColors
+            iconName="colorBackground"
+            :colors="['#2c3e50']"
+          ></IconWithColors>
+          <input
+            type="color"
+            v-model="backgroundColor"
+            name="background-color"
+            id="background-color"
+          />
+        </label>
+        <label for="text-color">
+          <IconWithColors
+            iconName="colorText"
+            :colors="['#2c3e50']"
+          ></IconWithColors>
+          <input
+            type="color"
+            v-model="textColor"
+            name="text-color"
+            id="text-color"
+          />
+        </label>
       </div>
       <div class="presets">
         <img
@@ -307,46 +331,30 @@ textarea {
   margin-top: 20px;
 
   .configs {
+    position: relative;
     display: flex;
 
-    & *:not(:first-child) {
+    *:not(:first-child) {
       margin-left: 0.5rem;
     }
 
-    & img {
+    .icon-with-colors,
+    img {
       width: 2.5rem;
       height: 2.5rem;
       border-radius: 0.5rem;
+      cursor: pointer;
     }
-  }
 
-  .toggle-presets {
-    display: inline-flex;
-    width: 2.5rem;
-    height: 2.5rem;
-    align-items: center;
-    justify-content: center;
-    /* stylelint-disable-next-line declaration-colon-newline-after */
-    background-image: linear-gradient(
-      to right bottom,
-      #d16ba5,
-      #c777b9,
-      #ba83ca,
-      #aa8fd8,
-      #9a9ae1,
-      #8aa7ec,
-      #79b3f4,
-      #69bff8,
-      #52cffe,
-      #41dfff,
-      #46eefa,
-      #5ffbf1
-    );
-    border-radius: 0.5rem;
-    color: #505050;
-    cursor: pointer;
-    font-size: 1.2rem;
-    font-weight: bold;
+    input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border: none;
+      opacity: 0;
+    }
   }
 
   .presets {
