@@ -334,7 +334,7 @@ textarea {
     position: relative;
     display: flex;
 
-    *:not(:first-child) {
+    & > *:not(:first-child) {
       margin-left: 0.5rem;
     }
 
@@ -346,14 +346,26 @@ textarea {
       cursor: pointer;
     }
 
-    input {
+    label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    input[type="color"] {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 0;
-      height: 0;
+      bottom: -7px;
+      width: 1.1rem;
+      height: 0.4rem;
+      border-radius: 3px;
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    input[type="color"]::-webkit-color-swatch {
       border: none;
-      opacity: 0;
     }
   }
 
