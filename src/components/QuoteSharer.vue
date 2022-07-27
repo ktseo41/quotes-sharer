@@ -31,8 +31,8 @@ const _presets = [
     textColor: "#2c2c2c",
   },
   {
-    backgroundColor: "white",
-    textColor: "black",
+    backgroundColor: "#fff",
+    textColor: "#000",
   },
   {
     backgroundColor: "#005f73",
@@ -390,6 +390,7 @@ textarea {
       border-radius: 0.5rem;
       cursor: pointer;
       font-size: 1.2rem;
+      font-weight: bold;
 
       &:not(:nth-child(2)) {
         margin-left: 10px;
