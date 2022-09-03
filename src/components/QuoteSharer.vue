@@ -95,6 +95,9 @@ const fontSizeSliderOn = ref(false);
 const toggleFontSizeSliderOn = () => {
   fontSizeSliderOn.value = !fontSizeSliderOn.value;
 };
+
+const showTextCounts = ref(true);
+
 // 이미지 다운로드 혹은 공유
 const sharing = ref();
 const isLoadingImage = ref(false);
@@ -185,10 +188,19 @@ function share() {
         fontSize: `${paragraphFontSize}px`,
       }"
     >
-      <textarea ref="_content" class="content" spellcheck="false"></textarea>
-      <div class="author-and-title">
-        <h4 class="title">{{ titleText }}</h4>
-        <span class="author">{{ authorText }}</span>
+      <textarea
+        v-model="_content"
+        class="content"
+        spellcheck="false"
+      ></textarea>
+      <div class="sharing-bottom">
+        <div class="author-and-title">
+          <h4 class="title">{{ titleText }}</h4>
+          <span class="author">{{ authorText }}</span>
+        </div>
+        <div v-if="showTextCounts" class="text-counts">
+          {{ _content?.length }}
+        </div>
       </div>
     </div>
     <div class="bottom-bar">
@@ -333,19 +345,29 @@ textarea {
   resize: none;
 }
 
-.author-and-title {
-  display: table-cell;
-  width: 100%;
-  height: 3rem;
-  vertical-align: bottom;
+.sharing-bottom {
+  display: flex;
+  align-items: flex-end;
 
-  .title {
-    display: inline;
-    margin-right: 0.5rem;
+  .author-and-title {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    height: 3rem;
+
+    .title {
+      display: inline;
+      margin-right: 0.5rem;
+    }
+
+    .author {
+      font-size: 0.9rem;
+    }
   }
 
-  .author {
-    font-size: 0.9rem;
+  .text-counts {
+    color: #999;
+    font-size: 0.7rem;
   }
 }
 
