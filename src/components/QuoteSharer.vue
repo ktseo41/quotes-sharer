@@ -91,6 +91,10 @@ const checkIfCanHidePresets = () => {
   }
 };
 
+const fontSizeSliderOn = ref(false);
+const toggleFontSizeSliderOn = () => {
+  fontSizeSliderOn.value = !fontSizeSliderOn.value;
+};
 // 이미지 다운로드 혹은 공유
 const sharing = ref();
 const isLoadingImage = ref(false);
@@ -188,7 +192,7 @@ function share() {
       </div>
     </div>
     <div class="bottom-bar">
-      <div v-if="!presetsOn" class="configs">
+      <div v-if="!presetsOn && !fontSizeSliderOn" class="configs">
         <IconWithColors
           iconName="brush"
           :colors="[
@@ -225,8 +229,14 @@ function share() {
             id="text-color"
           />
         </label>
+        <IconWithColors
+          iconName="fontSize"
+          :colors="['#2c3e50']"
+          @click="toggleFontSizeSliderOn"
+        >
+        </IconWithColors>
       </div>
-      <div class="presets">
+      <div v-if="presetsOn" class="presets">
         <img
           v-show="presetsOn"
           src="../assets/ic_fluent_arrow_ios_left_24.svg"
@@ -248,6 +258,22 @@ function share() {
             가
           </span>
         </transition-group>
+      </div>
+      <div v-if="fontSizeSliderOn" class="slider">
+        <img
+          src="../assets/ic_fluent_arrow_ios_left_24.svg"
+          @click="toggleFontSizeSliderOn"
+          alt="닫기"
+        />
+        <div v-if="fontSizeSliderOn" class="slider">
+          <input
+            v-model="paragraphFontSize"
+            type="range"
+            name="paragraph-font-size"
+            id="paragraph-font-size"
+          />
+          <input v-model="paragraphFontSize" type="number" />
+        </div>
       </div>
       <div class="buttons">
         <img
@@ -395,6 +421,34 @@ textarea {
       &:not(:nth-child(2)) {
         margin-left: 10px;
       }
+    }
+  }
+
+  .slider {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    & img {
+      display: inline-flex;
+      width: 2.8rem;
+      height: 2.8rem;
+      padding: 0.5rem;
+      cursor: pointer;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 0.5rem;
+      cursor: pointer;
+      -webkit-appearance: none;
+      background-color: #f5f5f5;
+    }
+
+    input[type="number"] {
+      width: 3.2rem;
+      padding: 0.5rem;
+      margin-left: 0.5rem;
     }
   }
 
