@@ -427,7 +427,7 @@ textarea {
   .slider {
     display: flex;
     align-items: center;
-    width: 100%;
+    flex-grow: 1;
 
     & img {
       display: inline-flex;
