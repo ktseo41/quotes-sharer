@@ -127,15 +127,19 @@ const downloadImage = function () {
     .then((dataUrl) => {
       link.href = dataUrl || "다운로드";
       isLoadingImage.value = false;
+      showTextCounts.value = true;
       link.click();
     })
     .catch((error) => {
       console.error(error);
       isLoadingImage.value = false;
+      showTextCounts.value = true;
     });
 };
 
 function share() {
+  showTextCounts.value = false;
+
   if (!navigator?.canShare) {
     downloadImage();
     return;
@@ -169,11 +173,13 @@ function share() {
       };
       navigator.share(options);
       isLoadingImage.value = false;
+      showTextCounts.value = true;
     })
     .catch((error) => {
       console.error(error);
       alert(error);
       isLoadingImage.value = false;
+      showTextCounts.value = true;
     });
 }
 </script>
@@ -351,9 +357,9 @@ textarea {
 
   .author-and-title {
     display: flex;
-    align-items: flex-end;
     width: 100%;
     height: 3rem;
+    align-items: flex-end;
 
     .title {
       display: inline;
@@ -448,8 +454,8 @@ textarea {
 
   .slider {
     display: flex;
-    align-items: center;
     flex-grow: 1;
+    align-items: center;
 
     & img {
       display: inline-flex;
@@ -462,9 +468,9 @@ textarea {
     input[type="range"] {
       width: 100%;
       height: 0.5rem;
-      cursor: pointer;
-      -webkit-appearance: none;
+      appearance: none;
       background-color: #f5f5f5;
+      cursor: pointer;
     }
 
     input[type="number"] {
