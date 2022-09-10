@@ -359,15 +359,16 @@ textarea {
     display: flex;
     width: 100%;
     height: 3rem;
-    align-items: flex-end;
 
     .title {
       display: inline;
       margin-right: 0.5rem;
+      align-self: flex-end;
     }
 
     .author {
       font-size: 0.9rem;
+      align-self: flex-end;
     }
   }
 
