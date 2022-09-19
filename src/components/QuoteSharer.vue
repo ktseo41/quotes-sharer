@@ -352,27 +352,28 @@ textarea {
 }
 
 .sharing-bottom {
-  display: flex;
-  align-items: flex-end;
+  width: 100%;
+  display: table;
 
   .author-and-title {
-    display: flex;
-    width: 100%;
+    display: table-cell;
+    vertical-align: bottom;
     height: 3rem;
+    width: 96%;
 
     .title {
       display: inline;
       margin-right: 0.5rem;
-      align-self: flex-end;
     }
 
     .author {
       font-size: 0.9rem;
-      align-self: flex-end;
     }
   }
 
   .text-counts {
+    display: table-cell;
+    vertical-align: bottom;
     color: #999;
     font-size: 0.7rem;
   }
