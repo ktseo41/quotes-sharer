@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, ref, unref, watch } from "vue";
+import { computed, ref } from "vue";
 import domToImage from "dom-to-image";
-import LoadingIcon from "../assets/LoadingIcon.vue";
-import IconWithColors from "../assets/IconWithColors.vue";
+import LoadingIcon from "./components/LoadingIcon.vue";
+import IconWithColors from "./components/IconWithColors.vue";
 const { toPng } = domToImage;
 
 const content = ref("");
@@ -257,7 +257,7 @@ function share() {
       <div v-if="presetsOn" class="presets">
         <img
           v-show="presetsOn"
-          src="../assets/ic_fluent_arrow_ios_left_24.svg"
+          src="./assets/ic_fluent_arrow_ios_left_24.svg"
           @click="togglePresets"
           alt="닫기"
         />
@@ -279,7 +279,7 @@ function share() {
       </div>
       <div v-if="fontSizeSliderOn" class="slider">
         <img
-          src="../assets/ic_fluent_arrow_ios_left_24.svg"
+          src="./assets/ic_fluent_arrow_ios_left_24.svg"
           @click="toggleFontSizeSliderOn"
           alt="닫기"
         />
@@ -297,7 +297,7 @@ function share() {
         <img
           v-if="!isLoadingImage"
           class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
-          src="../assets/ic_fluent_share_ios_24_filled.svg"
+          src="./assets/ic_fluent_share_ios_24_filled.svg"
           alt="내보내기"
           @click="share"
         />

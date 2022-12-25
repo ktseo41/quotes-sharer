@@ -1,13 +1,8 @@
 import { createApp } from "vue";
-import { createPinia } from "pinia";
 
-import App from "./App.vue";
-import router from "./router";
+import QuotesSharer from "./QuoteSharer.vue";
 import "./index.css";
 
-const app = createApp(App);
-
-app.use(createPinia());
-app.use(router);
+const app = createApp(QuotesSharer);
 
 app.mount("#app");
