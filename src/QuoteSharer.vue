@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import domToImage from "dom-to-image";
-import LoadingIcon from "./components/LoadingIcon.vue";
 import IconWithColors from "./components/IconWithColors.vue";
 const { toPng } = domToImage;
 
@@ -301,7 +300,13 @@ function share() {
           alt="내보내기"
           @click="share"
         />
-        <LoadingIcon width="40" height="40" v-else />
+        <img
+          v-else
+          width="40"
+          height="40"
+          src="./assets/loading.svg"
+          alt="내보내는중"
+        />
       </div>
     </div>
     <div class="additional-infos">
