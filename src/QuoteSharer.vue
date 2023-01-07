@@ -1,29 +1,20 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import domToImage from "dom-to-image";
 import IconWithColors from "./components/IconWithColors.vue";
+import QuoteContent from "./components/QuoteContent.vue";
 const { toPng } = domToImage;
-
-const content = ref("");
-const _content = ref();
-
-const title = ref("");
-const titleText = computed(() =>
-  title.value.length ? `『${title.value}』` : ""
-);
-
-const author = ref("");
-const authorText = computed(() =>
-  author.value.length ? `- ${author.value}` : ""
-);
-
-const backgroundColor = ref("#fff4ea");
-const textColor = ref("#2c2c2c");
 
 type Preset = {
   backgroundColor: string;
   textColor: string;
 };
+
+const title = ref("");
+const author = ref("");
+const backgroundColor = ref("#fff4ea");
+const textColor = ref("#2c2c2c");
+
 const _presets = [
   {
     backgroundColor: "#fff4ea",
@@ -108,13 +99,13 @@ const downloadImage = function () {
   const style = {
     transform: "scale(" + scale + ")",
     transformOrigin: "top left",
-    width: sharing.value.offsetWidth + "px",
-    height: sharing.value.offsetHeight + "px",
+    width: sharing.value.contentRef.offsetWidth + "px",
+    height: sharing.value.contentRef.offsetHeight + "px",
   };
 
   const param = {
-    height: sharing.value.offsetHeight * scale,
-    width: sharing.value.offsetWidth * scale,
+    height: sharing.value.contentRef.offsetHeight * scale,
+    width: sharing.value.contentRef.offsetWidth * scale,
     quality: 1,
     style,
   };
@@ -122,7 +113,7 @@ const downloadImage = function () {
   const link = document.createElement("a");
   link.download = title.value;
 
-  toPng(sharing.value, param)
+  toPng(sharing.value.contentRef, param)
     .then((dataUrl) => {
       link.href = dataUrl || "다운로드";
       isLoadingImage.value = false;
@@ -149,18 +140,18 @@ function share() {
   const style = {
     transform: "scale(" + scale + ")",
     transformOrigin: "top left",
-    width: sharing.value.offsetWidth + "px",
-    height: sharing.value.offsetHeight + "px",
+    width: sharing.value.contentRef.offsetWidth + "px",
+    height: sharing.value.contentRef.offsetHeight + "px",
   };
 
   const param = {
-    height: sharing.value.offsetHeight * scale,
-    width: sharing.value.offsetWidth * scale,
+    height: sharing.value.contentRef.offsetHeight * scale,
+    width: sharing.value.contentRef.offsetWidth * scale,
     quality: 1,
     style,
   };
 
-  toPng(sharing.value, param)
+  toPng(sharing.value.contentRef, param)
     .then(async (dataUrl: string) => {
       // https://stackoverflow.com/questions/61250048/how-to-share-a-single-base64-url-image-via-the-web-share-api
       const blob = await (await fetch(dataUrl)).blob();
@@ -184,30 +175,16 @@ function share() {
 </script>
 <template>
   <section>
-    <div
+    <QuoteContent
       ref="sharing"
-      class="shadow-lg wrapper"
-      :style="{
-        color: textColor,
-        backgroundColor,
-        fontSize: `${paragraphFontSize}px`,
-      }"
+      :title="title"
+      :author="author"
+      :textColor="textColor"
+      :backgroundColor="backgroundColor"
+      :contentFontSize="paragraphFontSize"
+      :showTextCount="showTextCounts"
     >
-      <textarea
-        v-model="_content"
-        class="content"
-        spellcheck="false"
-      ></textarea>
-      <div class="sharing-bottom">
-        <div class="author-and-title">
-          <h4 class="title">{{ titleText }}</h4>
-          <span class="author">{{ authorText }}</span>
-        </div>
-        <div v-if="showTextCounts" class="text-counts">
-          {{ _content?.length }}
-        </div>
-      </div>
-    </div>
+    </QuoteContent>
     <div class="bottom-bar">
       <div v-if="!presetsOn && !fontSizeSliderOn" class="configs">
         <IconWithColors
@@ -335,25 +312,6 @@ section {
   justify-content: center;
   padding-top: 1rem;
   justify-items: center;
-}
-
-.wrapper {
-  width: calc(100vw - 2rem);
-  max-width: 25rem;
-  height: calc(100vw - 2rem);
-  max-height: 25rem;
-  padding: 1rem;
-}
-
-textarea {
-  display: block;
-  width: 100%;
-  height: calc(100% - 3rem);
-  background-color: inherit;
-  border-radius: 0;
-  color: inherit;
-  outline: none;
-  resize: none;
 }
 
 .sharing-bottom {
