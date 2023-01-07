@@ -1,8 +1,6 @@
 import { createApp } from "vue";
+import QuoteSharer from "./QuoteSharer.vue";
 
-import QuotesSharer from "./QuoteSharer.vue";
-import "./index.css";
+import "./assets/main.css";
 
-const app = createApp(QuotesSharer);
-
-app.mount("#app");
+createApp(QuoteSharer).mount("#app");

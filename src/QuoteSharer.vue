@@ -265,7 +265,7 @@ function share() {
           name="list-complete"
         >
           <span
-            v-for="({ textColor, backgroundColor: bgColor }, idx) in presets"
+            v-for="{ textColor, backgroundColor: bgColor }, idx in presets"
             :key="`${textColor.slice(0, 1)}-${idx}`"
             :style="{ color: textColor, backgroundColor: bgColor }"
             class="shadow-md preset-item"
