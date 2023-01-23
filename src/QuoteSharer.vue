@@ -3,6 +3,7 @@ import { ref } from "vue";
 import domToImage from "dom-to-image";
 import IconWithColors from "./components/IconWithColors.vue";
 import QuoteContent from "./components/QuoteContent.vue";
+import useLogin from "./hooks/login";
 const { toPng } = domToImage;
 
 type Preset = {
@@ -172,6 +173,12 @@ function share() {
       showTextCounts.value = true;
     });
 }
+
+const { isCallbackUrl, login, auth } = useLogin();
+
+if (isCallbackUrl) {
+  auth();
+}
 </script>
 <template>
   <section>
@@ -304,6 +311,10 @@ function share() {
         id="author"
       />
     </div>
+    <div class="header">
+      <img @click="login" src="@/assets/ic_fluent_person_24_regular.svg" alt="로그인하기" />
+      <img @click="save" src="@/assets/ic_fluent_save_24_filled.svg" alt="저장하기" />
+    </div>
   </section>
 </template>
 <style lang="scss" scoped>
@@ -312,6 +323,13 @@ section {
   justify-content: center;
   padding-top: 1rem;
   justify-items: center;
+}
+
+.header {
+  display: flex;
+  width: 100%;
+  margin-top: 25px;
+  cursor: pointer;
 }
 
 .sharing-bottom {
