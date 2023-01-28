@@ -41,8 +41,6 @@ const authorWithSymbol = computed(() =>
   author.value.length ? `- ${author.value}` : ""
 );
 
-const showTextCount = ref(true);
-
 defineExpose({
   contentRef,
 });
