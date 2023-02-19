@@ -4,6 +4,12 @@ import domToImage from "dom-to-image";
 import IconWithColors from "./components/IconWithColors.vue";
 import QuoteContent from "./components/QuoteContent.vue";
 import useLogin from "./hooks/login";
+import {
+  DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_TEXT_COLOR,
+  DEFAULT_FONT_SIZE,
+  DEFAULT_PRESETS,
+} from "./constants";
 const { toPng } = domToImage;
 
 type Preset = {
@@ -13,27 +19,9 @@ type Preset = {
 
 const title = ref("");
 const author = ref("");
-const backgroundColor = ref("#fff4ea");
-const textColor = ref("#2c2c2c");
-
-const _presets = [
-  {
-    backgroundColor: "#fff4ea",
-    textColor: "#2c2c2c",
-  },
-  {
-    backgroundColor: "#fff",
-    textColor: "#000",
-  },
-  {
-    backgroundColor: "#005f73",
-    textColor: "#fafafa",
-  },
-  {
-    backgroundColor: "#ffd885",
-    textColor: "#004d05",
-  },
-];
+const backgroundColor = ref(DEFAULT_BACKGROUND_COLOR);
+const textColor = ref(DEFAULT_TEXT_COLOR);
+const paragraphFontSize = ref(DEFAULT_FONT_SIZE);
 
 const presets = ref<Preset[]>([]);
 
@@ -42,15 +30,13 @@ const bindColors = (preset: Preset) => {
   textColor.value = preset.textColor;
 };
 
-const paragraphFontSize = ref(17);
-
 const presetsOn = ref(false);
 
 const togglePresets = () => {
   if (!presetsOn.value) {
     presetsOn.value = !presetsOn.value;
     const intervalId = setInterval(() => {
-      const nextPreset = _presets.slice(
+      const nextPreset = DEFAULT_PRESETS.slice(
         presets.value.length,
         presets.value.length + 1
       );
@@ -76,7 +62,7 @@ const togglePresets = () => {
 let counter = 0;
 const checkIfCanHidePresets = () => {
   counter++;
-  if (counter === _presets.length) {
+  if (counter === DEFAULT_PRESETS.length) {
     presetsOn.value = false;
     counter = 0;
   }
