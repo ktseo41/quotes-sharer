@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref, watch, watchEffect } from "vue";
 import domToImage from "dom-to-image";
 import IconWithColors from "./components/IconWithColors.vue";
 import QuoteContent from "./components/QuoteContent.vue";
 import useLogin from "./hooks/login";
+import PureQuote from "./components/PureQuote.vue";
+import {
+  TransitionRoot,
+  TransitionChild,
+  Dialog,
+  DialogPanel,
+} from "@headlessui/vue";
 import {
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_TEXT_COLOR,
@@ -17,11 +24,27 @@ type Preset = {
   textColor: string;
 };
 
+const content = ref("");
 const title = ref("");
 const author = ref("");
 const backgroundColor = ref(DEFAULT_BACKGROUND_COLOR);
 const textColor = ref(DEFAULT_TEXT_COLOR);
+const modifiedAt = ref("");
 const paragraphFontSize = ref(DEFAULT_FONT_SIZE);
+const showTextCounts = ref(true);
+
+watch(
+  [
+    () => content.value,
+    () => title.value,
+    () => author.value,
+    () => backgroundColor.value,
+    () => textColor.value,
+  ],
+  () => {
+    modifiedAt.value = new Date().toLocaleTimeString();
+  }
+);
 
 const presets = ref<Preset[]>([]);
 
@@ -72,8 +95,6 @@ const fontSizeSliderOn = ref(false);
 const toggleFontSizeSliderOn = () => {
   fontSizeSliderOn.value = !fontSizeSliderOn.value;
 };
-
-const showTextCounts = ref(true);
 
 // 이미지 다운로드 혹은 공유
 const sharing = ref();
@@ -160,16 +181,147 @@ function share() {
     });
 }
 
-const { isCallbackUrl, login, auth } = useLogin();
+const { isLoggedIn, checkIfLoggedIn, isCallbackUrl, login, auth } = useLogin();
 
 if (isCallbackUrl) {
   auth();
 }
+
+onMounted(() => {
+  checkIfLoggedIn();
+});
+
+const showPreviousQuotes = ref(false);
+const contentsRef = ref<HTMLDivElement | null>(null);
+const quotesEls = ref<{ contentRef: HTMLDivElement }[]>([]);
+const allQuotesAreMounted = ref(false);
+const mountedArr = ref<number[]>([]);
+
+watchEffect(() => {
+  if (!quotesEls.value.length) return;
+
+  allQuotesAreMounted.value =
+    quotesEls.value.length === mountedArr.value.length;
+
+  if (allQuotesAreMounted.value) {
+    setQuotesStyles();
+  }
+});
+
+const setQuotesStyles = () => {
+  if (quotesEls.value.length === 0) return;
+
+  quotesEls.value.forEach((el) => {
+    if (!el.contentRef) return;
+
+    const rect = el.contentRef.getBoundingClientRect();
+    const centerY = window.innerHeight / 2;
+    const y = rect.top + rect.height / 2;
+    const distance = Math.abs(centerY - y);
+    const scale = Math.max(0, 1 - Math.pow(distance / window.innerHeight, 2));
+    const translateY = centerY - y > 0 ? (1 - scale) * 100 : -(1 - scale) * 100;
+    const isCenter = Math.abs(distance) < 150;
+
+    el.contentRef.style.transform = `scale(${scale}) translateY(${translateY}%)`;
+    el.contentRef.style.position = "relative";
+
+    if (isCenter) {
+      el.contentRef.style.zIndex = "11";
+    } else if (Math.abs(distance) < 300) {
+      el.contentRef.style.zIndex = "10";
+    } else {
+      el.contentRef.style.zIndex = "0";
+    }
+  });
+};
+
+const closeModal = () => {
+  showPreviousQuotes.value = false;
+  mountedArr.value = [];
+};
+type Quote = {
+  content: string;
+  title?: string;
+  author?: string;
+  backgroundColor?: string;
+  textColor?: string;
+  paragraphFontSize?: number;
+};
+
+const previousQuotes = ref<Quote[]>([]);
+
+const loadQuote = (quote: Quote) => {
+  title.value = quote.title || "";
+  author.value = quote.author || "";
+  backgroundColor.value = quote.backgroundColor || "";
+  textColor.value = quote.textColor || "";
+  paragraphFontSize.value = Number(quote.paragraphFontSize) || 1;
+  sharing.value.content = quote.content || "";
+  closeModal();
+};
+
+// TODO: 개발, 프로덕션 API 분기
+async function load() {
+  try {
+    const response = await fetch(`http://localhost:8080/load`, {
+      credentials: "include",
+    });
+    const data = await response.json();
+    previousQuotes.value = data;
+    showPreviousQuotes.value = true;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// TODO: 개발, 프로덕션 API 분기
+async function save() {
+  if (!content.value) {
+    alert("내용을 입력해주세요.");
+    return;
+  }
+  try {
+    await fetch(`http://localhost:8080/save`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        title: title.value,
+        content: content.value,
+        backgroundColor: backgroundColor.value,
+        textColor: textColor.value,
+        paragraphFontSize: paragraphFontSize.value,
+      }),
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
 </script>
 <template>
   <section>
+    <div class="header">
+      <div class="modified-at">
+        <span v-if="modifiedAt">{{ modifiedAt }}에 수정됨</span>
+      </div>
+      <img
+        v-if="!isLoggedIn"
+        src="@/assets/naver_login_button.png"
+        alt="로그인하기"
+        @click="login"
+      />
+      <span
+        v-else
+        class="logged-in justify-self-end self-end text-[#212121] hover:underline text-underline-offset-2"
+        @click="load"
+        >이전 기록 불러오기</span
+      >
+    </div>
     <QuoteContent
       ref="sharing"
+      @update:content="content = $event"
       :title="title"
       :author="author"
       :textColor="textColor"
@@ -226,7 +378,7 @@ if (isCallbackUrl) {
       <div v-if="presetsOn" class="presets">
         <img
           v-show="presetsOn"
-          src="./assets/ic_fluent_arrow_ios_left_24.svg"
+          src="@/assets/ic_fluent_arrow_ios_left_24.svg"
           @click="togglePresets"
           alt="닫기"
         />
@@ -235,12 +387,19 @@ if (isCallbackUrl) {
           name="list-complete"
         >
           <span
-            v-for="{ textColor, backgroundColor: bgColor }, idx in presets"
+            v-for="(preset, idx) in presets"
             :key="`${textColor.slice(0, 1)}-${idx}`"
-            :style="{ color: textColor, backgroundColor: bgColor }"
+            :style="{
+              color: textColor,
+              backgroundColor: preset.backgroundColor,
+            }"
             class="shadow-md preset-item"
-            :class="{ 'shadow-inner': bgColor === backgroundColor }"
-            @click="bindColors({ textColor, backgroundColor: bgColor })"
+            :class="{
+              'shadow-inner': preset.backgroundColor === backgroundColor,
+            }"
+            @click="
+              bindColors({ textColor, backgroundColor: preset.backgroundColor })
+            "
           >
             가
           </span>
@@ -248,7 +407,7 @@ if (isCallbackUrl) {
       </div>
       <div v-if="fontSizeSliderOn" class="slider">
         <img
-          src="./assets/ic_fluent_arrow_ios_left_24.svg"
+          src="@/assets/ic_fluent_arrow_ios_left_24.svg"
           @click="toggleFontSizeSliderOn"
           alt="닫기"
         />
@@ -264,9 +423,16 @@ if (isCallbackUrl) {
       </div>
       <div class="buttons">
         <img
+          v-if="isLoggedIn"
+          class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
+          src="@/assets/ic_fluent_save_24_filled.svg"
+          alt="저장하기"
+          @click="save"
+        />
+        <img
           v-if="!isLoadingImage"
           class="rounded-full hover:bg-gray-200 hover:cursor-pointer"
-          src="./assets/ic_fluent_share_ios_24_filled.svg"
+          src="@/assets/ic_fluent_share_ios_24_filled.svg"
           alt="내보내기"
           @click="share"
         />
@@ -274,7 +440,7 @@ if (isCallbackUrl) {
           v-else
           width="40"
           height="40"
-          src="./assets/loading.svg"
+          src="@/assets/loading.svg"
           alt="내보내는중"
         />
       </div>
@@ -297,11 +463,54 @@ if (isCallbackUrl) {
         id="author"
       />
     </div>
-    <div class="header">
-      <img @click="login" src="@/assets/ic_fluent_person_24_regular.svg" alt="로그인하기" />
-      <img @click="save" src="@/assets/ic_fluent_save_24_filled.svg" alt="저장하기" />
-    </div>
   </section>
+  <TransitionRoot appear :show="showPreviousQuotes" as="template">
+    <Dialog as="div" @close="closeModal" class="relative z-10"
+      >,
+      <TransitionChild
+        as="template"
+        enter="duration-300 ease-out"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="duration-200 ease-in"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 bg-black bg-opacity-25" />
+      </TransitionChild>
+      <div
+        ref="contentsRef"
+        @scroll="setQuotesStyles"
+        class="fixed inset-0 overflow-y-auto"
+      >
+        <div
+          class="flex min-h-full items-center justify-center p-4 text-center"
+        >
+          <DialogPanel
+            ref="previousQuotesRef"
+            @click="closeModal"
+            class="w-full max-w-md mt-[calc(50vh_-_179px)] transform overflow-hidden text-left align-middle transition-all"
+          >
+            <PureQuote
+              ref="quotesEls"
+              v-for="(quote, idx) in previousQuotes"
+              class="ease-in-out duration-50"
+              @mounted="(mounted) => (mounted ? mountedArr.push(idx) : null)"
+              :id="`pure-${idx}`"
+              :key="quote.content + idx"
+              @click="loadQuote(quote)"
+              :content="quote.content"
+              :author="quote.author"
+              :title="quote.title"
+              :textColor="quote.textColor"
+              :backgroundColor="quote.backgroundColor"
+              :contentFontSize="Number(quote.paragraphFontSize)"
+            ></PureQuote>
+          </DialogPanel>
+        </div>
+      </div>
+    </Dialog>
+  </TransitionRoot>
 </template>
 <style lang="scss" scoped>
 section {
@@ -312,10 +521,23 @@ section {
 }
 
 .header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   width: 100%;
-  margin-top: 25px;
+  margin-bottom: 10px;
   cursor: pointer;
+  height: 40px;
+
+  .modified-at {
+    color: rgb(224, 224, 224);
+    justify-self: start;
+    align-self: end;
+  }
+
+  img {
+    height: 40px;
+    justify-self: end;
+  }
 }
 
 .sharing-bottom {

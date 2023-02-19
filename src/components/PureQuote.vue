@@ -1,46 +1,50 @@
 <script setup lang="ts">
-import { ref, computed, toRefs, watch } from "vue";
+import {
+  DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_TEXT_COLOR,
+  DEFAULT_FONT_SIZE,
+} from "@/constants";
+import { computed, onMounted, ref, toRefs } from "vue";
 
 const props = defineProps({
-  textColor: {
+  content: {
     type: String,
     required: true,
+    default: "",
+  },
+  textColor: {
+    type: String,
+    required: false,
+    default: DEFAULT_TEXT_COLOR,
   },
   backgroundColor: {
     type: String,
-    required: true,
+    required: false,
+    default: DEFAULT_BACKGROUND_COLOR,
   },
   contentFontSize: {
     type: Number,
-    required: true,
-  },
-  showTextCount: {
-    type: Boolean,
-    required: true,
+    required: false,
+    default: DEFAULT_FONT_SIZE,
   },
   title: {
     type: String,
-    required: true,
+    required: false,
+    default: "",
   },
   author: {
     type: String,
-    required: true,
+    required: false,
+    default: "",
   },
 });
 
-const emits = defineEmits(["update:content"]);
+const emits = defineEmits(["mounted"]);
 
-const { title, author, textColor, backgroundColor, contentFontSize } =
+const isMounted = ref(false);
+const contentRef = ref(null);
+const { content, title, author, textColor, backgroundColor, contentFontSize } =
   toRefs(props);
-
-const contentRef = ref();
-const content = ref();
-
-watch(content, (newContent) => {
-  if (newContent?.length) {
-    emits("update:content", newContent);
-  }
-});
 
 const titleWithSymbol = computed(() =>
   title.value.length ? `『${title.value}』` : ""
@@ -49,21 +53,22 @@ const authorWithSymbol = computed(() =>
   author.value.length ? `- ${author.value}` : ""
 );
 
+onMounted(() => {
+  isMounted.value = true;
+  emits("mounted", true);
+});
+
 defineExpose({
   contentRef,
-  content,
 });
 </script>
 <template>
   <div ref="contentRef" class="shadow-lg content-wrapper">
-    <textarea v-model="content" spellcheck="false"></textarea>
+    <textarea v-model="content" spellcheck="false" disabled></textarea>
     <div class="content-bottom">
       <div class="content-bottom__title-and-author">
         <h4 class="title">{{ titleWithSymbol }}</h4>
         <span class="author">{{ authorWithSymbol }}</span>
-      </div>
-      <div v-if="showTextCount" class="content-bottom__text-count">
-        {{ content?.length }}
       </div>
     </div>
   </div>
@@ -78,6 +83,7 @@ defineExpose({
   color: v-bind("textColor");
   background-color: v-bind("backgroundColor");
   font-size: v-bind("`${contentFontSize}px`");
+  cursor: pointer;
 
   textarea {
     display: block;
@@ -88,6 +94,7 @@ defineExpose({
     color: inherit;
     outline: none;
     resize: none;
+    cursor: pointer;
   }
 
   .content-bottom {

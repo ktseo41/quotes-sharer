@@ -1,3 +1,4 @@
+import { ref } from "vue";
 import { v4 as uuidv4 } from "uuid";
 
 export default function useLogin() {
@@ -6,6 +7,7 @@ export default function useLogin() {
     ? import.meta.env.VITE_LOCAL_HOST
     : "https://ktseo41.github.io/quotes-sharer/";
   const state = uuidv4();
+  const isLoggedIn = ref(false);
 
   async function login() {
     localStorage.setItem(state, "true");
@@ -31,11 +33,13 @@ export default function useLogin() {
 
       localStorage.removeItem(state);
 
-      const data = await fetch(`${baseUrl}/auth?code=${code}`, {
+      await fetch(`${baseUrl}/auth?code=${code}`, {
         credentials: "include",
       });
-      console.log(await data.json());
+
+      isLoggedIn.value = true;
     } catch (error) {
+      isLoggedIn.value = false;
       console.error(error);
     } finally {
       // delete query strings
@@ -43,9 +47,32 @@ export default function useLogin() {
     }
   }
 
+  async function checkIfLoggedIn() {
+    const baseUrl = import.meta.env.DEV
+      ? import.meta.env.VITE_LOCAL_SERVER
+      : "";
+
+    try {
+      const response = await fetch(`${baseUrl}/ping`, {
+        credentials: "include",
+      });
+
+      if (response.status !== 200) {
+        throw new Error("Not logged in");
+      }
+
+      isLoggedIn.value = true;
+    } catch (error) {
+      console.error(error);
+      isLoggedIn.value = false;
+    }
+  }
+
   return {
     isCallbackUrl,
+    checkIfLoggedIn,
     login,
     auth,
+    isLoggedIn,
   };
 }

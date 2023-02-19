@@ -10,6 +10,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@headlessui/vue": "^1.7.8",
+    "@vueuse/core": "^9.12.0",
     "dom-to-image": "^2.6.0",
     "uuid": "^9.0.0",
     "vue": "^3.2.45"
