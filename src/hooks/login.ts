@@ -33,9 +33,13 @@ export default function useLogin() {
 
       localStorage.removeItem(state);
 
-      await fetch(`${baseUrl}/auth?code=${code}`, {
+      const { status } = await fetch(`${baseUrl}/auth?code=${code}`, {
         credentials: "include",
       });
+
+      if (status !== 200) {
+        throw new Error("auth failed");
+      }
 
       isLoggedIn.value = true;
     } catch (error) {
